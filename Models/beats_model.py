@@ -10,9 +10,8 @@ class Beats(Base):
 
     id = Column(Integer, primary_key=True)
     producer = Column(String, nullable=False)
-    beats_title = Column(String, nullable=False)
     beats_name = Column(String, nullable=False)
-    beats_file = Column(String, nullable=False)
+    beats_type_file = Column(String, nullable=False)
     beats_image_file = Column(String, nullable=False)
     genre = Column(Integer, ForeignKey("Genre.id", ondelete="CASCADE"), nullable=False)
     created_date = Column(

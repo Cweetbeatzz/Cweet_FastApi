@@ -34,7 +34,9 @@ async def get_user_by_id(
     output = db.query(User).filter(User.id == id).first()
 
     if not output:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not Found"
+        )
     else:
         return output
 
@@ -69,7 +71,7 @@ async def edit_user(
 
     if result is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Error!!! Not Found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not Found"
         )
     else:
         output.update(beats.dict(), synchronize_session=False)
@@ -88,7 +90,7 @@ async def delete_user(id: int, db: Session = Depends(get_db)):
 
     if result is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Error!!! Not Found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not Found"
         )
     else:
         output.delete(synchronize_session=False)

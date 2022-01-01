@@ -6,7 +6,7 @@ from sqlalchemy.orm.session import Session
 
 from SQL.database import get_db
 
-from Dtos.genre_dto import GenreCreateDto, GenreDto, GenreResponse
+from Dtos.genre_dto import GenreCreateDto, GenreResponse
 from Models.genre_model import Genre
 
 
@@ -30,8 +30,10 @@ async def get_genre_by_id(
 ):
     output = db.query(Genre).filter(Genre.id == id).first()
 
-    if not output:
-        return False
+    if output == None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Genre not Found"
+        )
     else:
         return output
 
