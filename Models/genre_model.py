@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer
 from sqlalchemy.sql.expression import text
-from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.sql.sqltypes import TIMESTAMP, String
-from database import Base
+from SQL.database import Base
 
 
 class Genre(Base):

@@ -1,19 +1,18 @@
 from fastapi import FastAPI
 from fastapi.params import Depends
+from fastapi.routing import APIRouter
 from sqlalchemy.orm.session import Session
 
-from database import get_db
-from ..Dtos.user_dto import UserCreate
+from SQL.database import get_db
+from Dtos.user_dto import UserCreateDto
 
-
-cweetbeatz = FastAPI()
-
+router = APIRouter(prefix="/users", tags=["Users"])
 ##################################################################
 
 
-@cweetbeatz.get("/")
+@router.get("/")
 async def get_all_user(
-    beats: UserCreate,
+    beats: UserCreateDto,
     db: Session = Depends(get_db),
 ):
     return
@@ -22,9 +21,9 @@ async def get_all_user(
 ##################################################################
 
 
-@cweetbeatz.get("User/{id}")
+@router.get("User/{id}")
 async def get_user_by_id(
-    beats: UserCreate,
+    beats: UserCreateDto,
     db: Session = Depends(get_db),
 ):
     return
@@ -33,9 +32,9 @@ async def get_user_by_id(
 ##################################################################
 
 
-@cweetbeatz.post("User/Create")
+@router.post("User/Create")
 async def create_user(
-    beats: UserCreate,
+    beats: UserCreateDto,
     db: Session = Depends(get_db),
 ):
     return
@@ -44,9 +43,9 @@ async def create_user(
 ##################################################################
 
 
-@cweetbeatz.put("User/Edit/{id}")
+@router.put("User/Edit/{id}")
 async def edit_user(
-    beats: UserCreate,
+    beats: UserCreateDto,
     db: Session = Depends(get_db),
 ):
     return
@@ -55,6 +54,6 @@ async def edit_user(
 ##################################################################
 
 
-@cweetbeatz.delete("User/delete/{id}")
-async def delete_user(beats: UserCreate):
+@router.delete("User/delete/{id}")
+async def delete_user(beats: UserCreateDto):
     return

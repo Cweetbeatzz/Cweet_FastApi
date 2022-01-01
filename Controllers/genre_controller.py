@@ -1,21 +1,21 @@
-from fastapi import FastAPI, Response, status, HTTPException
+from typing import List
+from fastapi import Response, status, HTTPException
 from fastapi.params import Depends
-from pydantic.main import Model
+from fastapi.routing import APIRouter
 from sqlalchemy.orm.session import Session
 
-from database import get_db
+from SQL.database import get_db
 
-from ..Dtos.genre_dto import GenreCreateDto, GenreDto, GenreEditDto
-from ..Models.genre_model import Genre
+from Dtos.genre_dto import GenreCreateDto, GenreDto, GenreResponse
+from Models.genre_model import Genre
 
 
-cweetbeatz = FastAPI()
-
+router = APIRouter(prefix="/genre", tags=["Genre"])
 ##################################################################
 
 
-@cweetbeatz.get("/")
-async def get_all_genre(genre_dto: GenreDto, db: Session = Depends(get_db)):
+@router.get("/", response_model=List[GenreResponse])
+async def get_all_genre(db: Session = Depends(get_db)):
     output = db.query(Genre).all()
     return output
 
@@ -23,13 +23,12 @@ async def get_all_genre(genre_dto: GenreDto, db: Session = Depends(get_db)):
 ##################################################################
 
 
-@cweetbeatz.get("Genre/{id}")
+@router.get("/{id}", response_model=GenreResponse)
 async def get_genre_by_id(
     id: int,
-    genre_dto: GenreDto,
     db: Session = Depends(get_db),
 ):
-    output = db.query(Genre).filter(genre_dto.id == id).first()
+    output = db.query(Genre).filter(Genre.id == id).first()
 
     if not output:
         return False
@@ -40,7 +39,7 @@ async def get_genre_by_id(
 ##################################################################
 
 
-@cweetbeatz.post("Genre/Create")
+@router.post("/create")
 async def create_genre(
     genre_dto: GenreCreateDto,
     db: Session = Depends(get_db),
@@ -48,7 +47,7 @@ async def create_genre(
     output = Genre(**genre_dto.dict())
     db.add(output)
     db.commit()
-    db.refresh()
+    db.refresh(output)
 
     return output
 
@@ -56,42 +55,42 @@ async def create_genre(
 ##################################################################
 
 
-@cweetbeatz.put("Genre/Edit/{id}")
+@router.put("/edit/{id}")
 async def edit_genre(
     id: int,
-    genre_dto: GenreEditDto,
+    genre_dto: GenreCreateDto,
     db: Session = Depends(get_db),
 ):
-    output = db.query(Genre).filter(genre_dto.id == id)
+    output = db.query(Genre).filter(Genre.id == id)
+    result = output.first()
 
-    if output.first() == None:
+    if result == None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Genre not Found"
         )
-    else:
-        output.update(genre_dto.dict(), synchronize_session=False)
-        db.commit()
 
-    return Response(status_code=status.HTTP_200_OK)
+    output.update(genre_dto.dict(), synchronize_session=False)
+    db.commit()
+
+    return "Update Successfull"
 
 
 ##################################################################
 
 
-@cweetbeatz.delete("Genre/delete/{id}")
+@router.delete("/delete/{id}")
 async def delete_genre(
     id: int,
-    genre_dto: GenreDto,
     db: Session = Depends(get_db),
 ):
-    output = db.query(Genre).filter(genre_dto.id == id)
+    output = db.query(Genre).filter(Genre.id == id)
 
     if output.first() is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Genre not Found"
         )
     else:
-        db.delete(synchronize_session=False)
-        db.commit()
+        output.delete(synchronize_session=False)
+    db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
