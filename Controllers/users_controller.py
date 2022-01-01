@@ -1,32 +1,42 @@
+from typing import List
 from fastapi import FastAPI
+from fastapi.exceptions import HTTPException
 from fastapi.params import Depends
 from fastapi.routing import APIRouter
 from sqlalchemy.orm.session import Session
-
+from starlette import status
+from starlette.responses import Response
+from Models.users_model import User
 from SQL.database import get_db
-from Dtos.user_dto import UserCreateDto
+from Dtos.user_dto import UserCreateDto, UserEditDto, UserResponse
+
 
 router = APIRouter(prefix="/users", tags=["Users"])
 ##################################################################
 
 
-@router.get("/")
+@router.get("/", response_model=List[UserResponse])
 async def get_all_user(
-    beats: UserCreateDto,
     db: Session = Depends(get_db),
 ):
-    return
+    output = db.query(User).all()
+    return output
 
 
 ##################################################################
 
 
-@router.get("User/{id}")
+@router.get("/{id}", response_model=UserResponse)
 async def get_user_by_id(
-    beats: UserCreateDto,
+    id: int,
     db: Session = Depends(get_db),
 ):
-    return
+    output = db.query(User).filter(User.id == id).first()
+
+    if not output:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    else:
+        return output
 
 
 ##################################################################
@@ -34,26 +44,54 @@ async def get_user_by_id(
 
 @router.post("User/Create")
 async def create_user(
-    beats: UserCreateDto,
+    user: UserCreateDto,
     db: Session = Depends(get_db),
 ):
-    return
+    output = User(**user.dict())
+    db.add(output)
+    db.commit()
+    db.refresh(output)
+
+    return "Successfull"
 
 
 ##################################################################
 
 
-@router.put("User/Edit/{id}")
+@router.put("/Edit/{id}", response_model=UserResponse)
 async def edit_user(
-    beats: UserCreateDto,
+    id: int,
+    beats: UserEditDto,
     db: Session = Depends(get_db),
 ):
-    return
+    output = db.query(User).filter(User.id == id)
+    result = output.first()
+
+    if result is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Error!!! Not Found"
+        )
+    else:
+        output.update(beats.dict(), synchronize_session=False)
+        db.commit()
+
+    return "Update Successfull"
 
 
 ##################################################################
 
 
-@router.delete("User/delete/{id}")
-async def delete_user(beats: UserCreateDto):
-    return
+@router.delete("/delete/{id}")
+async def delete_user(id: int, db: Session = Depends(get_db)):
+    output = db.query(User).filter(User.id == id)
+    result = output.first()
+
+    if result is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Error!!! Not Found"
+        )
+    else:
+        output.delete(synchronize_session=False)
+        db.commit()
+
+    return "Delete Successfull"
