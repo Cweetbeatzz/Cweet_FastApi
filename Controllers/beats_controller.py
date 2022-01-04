@@ -1,5 +1,6 @@
 from typing import List
-from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
+from fastapi import FastAPI, File, UploadFile
 from fastapi.exceptions import HTTPException
 from fastapi.params import Depends
 from fastapi.routing import APIRouter

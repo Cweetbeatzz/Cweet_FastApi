@@ -1,3 +1,4 @@
+from fastapi.datastructures import UploadFile
 from sqlalchemy import Column, Integer
 from sqlalchemy.sql.expression import text
 from sqlalchemy.sql.schema import ForeignKey
@@ -11,8 +12,8 @@ class Beats(Base):
     id = Column(Integer, primary_key=True)
     producer = Column(String, nullable=False)
     beats_name = Column(String, nullable=False)
-    beats_type_file = Column(String, nullable=False)
-    beats_image_file = Column(String, nullable=False)
+    beats_type_file = Column(UploadFile, nullable=False)
+    beats_image_file = Column(UploadFile, nullable=False)
     genre = Column(Integer, ForeignKey("Genre.id", ondelete="CASCADE"), nullable=False)
     created_date = Column(
         TIMESTAMP(timezone=True), nullable=False, server_default=text("now()")

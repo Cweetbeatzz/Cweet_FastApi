@@ -3,7 +3,12 @@ from Models import genre_model
 from SQL.database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
-from Controllers import beats_controller, genre_controller, users_controller
+from Controllers import (
+    authentication,
+    beats_controller,
+    genre_controller,
+    users_controller,
+)
 
 cweetbeatz = FastAPI()
 
@@ -20,13 +25,18 @@ origins = []
 # creates the table in the database
 
 genre_model.Base.metadata.create_all(bind=engine)
-# beats_model.Base.metadata.create_all(bind=engine)
-# users_model.Base.metadata.create_all(bind=engine)
+
 
 ##################################################################
 cweetbeatz.include_router(beats_controller.router)
 cweetbeatz.include_router(genre_controller.router)
 cweetbeatz.include_router(users_controller.router)
+cweetbeatz.include_router(authentication.router)
+
+##################################################################
+
+
+##################################################################
 
 
 @cweetbeatz.get("/")

@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel
 from pydantic.networks import EmailStr
 
@@ -27,6 +28,23 @@ class UserCreateDto(UserBase):
 ##################################################################
 class UserEditDto(UserBase):
     pass
+
+
+##################################################################
+class UserLoginDto(UserBase):
+    email: EmailStr
+    password: str
+
+
+##################################################################
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
+
+##################################################################
+class TokenData(BaseModel):
+    id: Optional[str] = None
 
 
 ##################################################################

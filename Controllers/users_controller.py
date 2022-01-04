@@ -9,6 +9,7 @@ from starlette.responses import Response
 from Models.users_model import User
 from SQL.database import get_db
 from Dtos.user_dto import UserCreateDto, UserEditDto, UserResponse
+from app.passwords import hash_password
 
 
 router = APIRouter(prefix="/users", tags=["Users"])
@@ -49,6 +50,14 @@ async def create_user(
     user: UserCreateDto,
     db: Session = Depends(get_db),
 ):
+    # hashing the password
+
+    password_hash = hash_password(user.password)
+    confirm_password_hash = hash_password(user.confirmpassword)
+
+    user.password = password_hash
+    user.confirmpassword = confirm_password_hash
+
     output = User(**user.dict())
     db.add(output)
     db.commit()
