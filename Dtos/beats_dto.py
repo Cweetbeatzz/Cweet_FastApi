@@ -1,4 +1,6 @@
 from pydantic import BaseModel
+from Dtos.user_dto import UserResponse
+
 
 ##################################################################
 
@@ -18,6 +20,7 @@ class BeatsDtoResponse(BeatsDto):
     id: int
     created_date: str
     updated_date: str
+    user: UserResponse
 
 
 ##################################################################

@@ -6,14 +6,14 @@ from fastapi import HTTPException, status
 from fastapi.params import Depends
 from fastapi.security.oauth2 import OAuth2PasswordBearer
 from Dtos.user_dto import TokenData
-from enviroment import settings
+from enviroment import Settings
 
 
 oauth2 = OAuth2PasswordBearer(tokenUrl="login")
 
-JWT_SECRET_KEY = settings.JWT_SECRET_KEY
-ALGORITHM = settings.ALGORITHM
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.ACCESS_TOKEN_EXPIRE_MINUTES
+JWT_SECRET_KEY = Settings.JWT_SECRET_KEY
+ALGORITHM = Settings.ALGORITHM
+ACCESS_TOKEN_EXPIRE_MINUTES = Settings.ACCESS_TOKEN_EXPIRE_MINUTES
 
 
 def create_access_token(data: dict):

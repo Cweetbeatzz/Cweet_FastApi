@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-from Models import genre_model
 from SQL.database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -12,19 +11,20 @@ from Controllers import (
 
 cweetbeatz = FastAPI()
 
-origins = []
+# origins = []  # enable this to allow access by specfic
+origins = ["*"]  # enable this to allow access by everyone
 
-# cweetbeatz.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=origins,
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_header=["*"],
-# )
+cweetbeatz.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_header=["*"],
+)
 ##################################################################
 # creates the table in the database
 
-genre_model.Base.metadata.create_all(bind=engine)
+# genre_model.Base.metadata.create_all(bind=engine)
 
 
 ##################################################################

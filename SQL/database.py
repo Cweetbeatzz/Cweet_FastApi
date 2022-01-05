@@ -5,9 +5,11 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from enviroment import Settings
+
 ######################################################################################
-# SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.DATABASE_USERNAME}:{settings.DATABASE_PASSWORD}@{settings.DATABASE_HOSTNAME}/{settings.DATABASE_NAME}"
-SQLALCHEMY_DATABASE_URL = "postgresql://postgres:1234567890@localhost/Cweetbeatz"
+
+SQLALCHEMY_DATABASE_URL = f"postgresql://{Settings.DATABASE_USERNAME}:{Settings.DATABASE_PASSWORD}@{Settings.DATABASE_HOSTNAME}/{Settings.DATABASE_NAME}"
 
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
@@ -30,20 +32,20 @@ def get_db():
 
 ######################################################################################
 
-while True:
-    try:
-        connection = psycopg2.connect(
-            host="localhost",
-            database="Cweetbeatz",
-            user="postgres",
-            password="1234567890",
-            cursor_factory=RealDictCursor,
-        )
-        cursor = connection.cursor()
-        print("Database Connection Successful")
-        ####-----BREAK------
-        break
-    except Exception as error:
-        print("Connection to Database Failed")
-        print("Error:", error)
-        time.sleep(5)
+# while True:
+#     try:
+#         connection = psycopg2.connect(
+#             host="localhost",
+#             database="Cweetbeatz",
+#             user="postgres",
+#             password="1234567890",
+#             cursor_factory=RealDictCursor,
+#         )
+#         cursor = connection.cursor()
+#         print("Database Connection Successful")
+#         ####-----BREAK------
+#         break
+#     except Exception as error:
+#         print("Connection to Database Failed")
+#         print("Error:", error)
+#         time.sleep(5)
